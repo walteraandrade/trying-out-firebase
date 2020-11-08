@@ -1,0 +1,189 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  insert data into the table: "songs"
+  """
+  insert_songs(
+    """the rows to be inserted"""
+    objects: [songs_insert_input!]!
+  ): songs_mutation_response
+
+  """
+  insert a single row into the table: "songs"
+  """
+  insert_songs_one(
+    """the row to be inserted"""
+    object: songs_insert_input!
+  ): songs
+}
+
+"""An object with globally unique ID"""
+interface Node {
+  """A globally unique identifier"""
+  id: ID!
+}
+
+"""column ordering options"""
+enum order_by {
+  """in the ascending order, nulls last"""
+  asc
+
+  """in the ascending order, nulls first"""
+  asc_nulls_first
+
+  """in the ascending order, nulls last"""
+  asc_nulls_last
+
+  """in the descending order, nulls first"""
+  desc
+
+  """in the descending order, nulls first"""
+  desc_nulls_first
+
+  """in the descending order, nulls last"""
+  desc_nulls_last
+}
+
+type PageInfo {
+  endCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+}
+
+"""query root"""
+type query_root {
+  node(
+    """A globally unique id"""
+    id: ID!
+  ): Node
+
+  """
+  fetch data from the table: "songs"
+  """
+  songs_connection(
+    after: String
+    before: String
+
+    """distinct select on columns"""
+    distinct_on: [songs_select_column!]
+    first: Int
+    last: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [songs_order_by!]
+
+    """filter the rows returned"""
+    where: songs_bool_exp
+  ): songsConnection!
+}
+
+"""
+columns and relationships of "songs"
+"""
+type songs implements Node {
+  id: ID!
+}
+
+"""
+input type for inserting array relation for remote table "songs"
+"""
+input songs_arr_rel_insert_input {
+  data: [songs_insert_input!]!
+}
+
+"""
+Boolean expression to filter rows from the table "songs". All fields are combined with a logical 'AND'.
+"""
+input songs_bool_exp {
+  _and: [songs_bool_exp]
+  _not: songs_bool_exp
+  _or: [songs_bool_exp]
+}
+
+"""
+input type for inserting data into table "songs"
+"""
+input songs_insert_input
+
+"""
+response of any mutation on the table "songs"
+"""
+type songs_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [songs!]!
+}
+
+"""
+input type for inserting object relation for remote table "songs"
+"""
+input songs_obj_rel_insert_input {
+  data: songs_insert_input!
+}
+
+"""
+ordering options when selecting data from "songs"
+"""
+input songs_order_by
+
+"""
+primary key columns input for table: "songs"
+"""
+input songs_pk_columns_input {
+  id: Int!
+}
+
+"""
+select columns of table "songs"
+"""
+enum songs_select_column
+
+"""
+A Relay Connection object on "songs"
+"""
+type songsConnection {
+  edges: [songsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type songsEdge {
+  cursor: String!
+  node: songs!
+}
+
+"""subscription root"""
+type subscription_root {
+  node(
+    """A globally unique id"""
+    id: ID!
+  ): Node
+
+  """
+  fetch data from the table: "songs"
+  """
+  songs_connection(
+    after: String
+    before: String
+
+    """distinct select on columns"""
+    distinct_on: [songs_select_column!]
+    first: Int
+    last: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [songs_order_by!]
+
+    """filter the rows returned"""
+    where: songs_bool_exp
+  ): songsConnection!
+}
+
